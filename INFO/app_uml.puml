@@ -1,0 +1,94 @@
+@startuml
+class com.example.Spring_Boot_Security_HW.service.user.UserServiceImpl {
+- UserRepository userRepository
+- RoleRepository roleRepository
+- PasswordEncoder passwordEncoder
++ void saveUser(UserDto)
++ User findByEmail(String)
++ List<UserDto> findAllUsers()
+- UserDto convertEntityToDo(User)
+- Role checkRoleExist()
+}
+
+
+class com.example.Spring_Boot_Security_HW.entity.User {
+- {static} long serialVersionUID
+- Long id
+- String name
+- String email
+- String phone
+- String password
+- List<Role> roles
+}
+
+class com.example.Spring_Boot_Security_HW.dto.UserDto {
+- Long id
+- String firstName
+- String lastName
+- String email
+- String phone
+- String password
+}
+
+class com.example.Spring_Boot_Security_HW.SpringBootSecurityHwApplication {
++ {static} void main(String[])
+}
+
+class com.example.Spring_Boot_Security_HW.config.AppSecurity {
+- UserDetailsService userDetailsService
++ {static} PasswordEncoder passwordEncoder()
++ SecurityFilterChain filterChain(HttpSecurity)
++ void configureGlobal(AuthenticationManagerBuilder)
+}
+
+
+class com.example.Spring_Boot_Security_HW.entity.Role {
+- Long id
+- String name
+- List<User> users
+}
+
+interface com.example.Spring_Boot_Security_HW.repository.UserRepository {
+~ User findByEmail(String)
+}
+
+interface com.example.Spring_Boot_Security_HW.service.user.UserService {
+~ void saveUser(UserDto)
+~ User findByEmail(String)
+~ List<UserDto> findAllUsers()
+}
+
+class com.example.Spring_Boot_Security_HW.service.security.AppUserDetailsService {
+- UserRepository userRepository
++ UserDetails loadUserByUsername(String)
+- Collection<? extends GrantedAuthority> mapRolesToAuthorities(Collection<Role>)
+}
+
+
+interface com.example.Spring_Boot_Security_HW.repository.RoleRepository {
+~ Role findByName(String)
+}
+
+class com.example.Spring_Boot_Security_HW.controller.AuthController {
+- UserService userService
++ String home(Model)
++ String loginForm(Model)
++ String showRegistrationForm(Model)
++ String registration(UserDto,BindingResult,Model)
++ String listRegisteredUsers(Model)
+}
+
+
+class com.example.Spring_Boot_Security_HW.config.ServletInitializer {
+# SpringApplicationBuilder configure(SpringApplicationBuilder)
+}
+
+
+
+com.example.Spring_Boot_Security_HW.service.user.UserService <|.. com.example.Spring_Boot_Security_HW.service.user.UserServiceImpl
+java.io.Serializable <|.. com.example.Spring_Boot_Security_HW.entity.User
+org.springframework.data.jpa.repository.JpaRepository <|-- com.example.Spring_Boot_Security_HW.repository.UserRepository
+org.springframework.security.core.userdetails.UserDetailsService <|.. com.example.Spring_Boot_Security_HW.service.security.AppUserDetailsService
+org.springframework.data.jpa.repository.JpaRepository <|-- com.example.Spring_Boot_Security_HW.repository.RoleRepository
+org.springframework.boot.web.servlet.support.SpringBootServletInitializer <|-- com.example.Spring_Boot_Security_HW.config.ServletInitializer
+@enduml
